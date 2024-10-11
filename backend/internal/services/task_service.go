@@ -1,0 +1,53 @@
+package services
+
+import (
+	"errors"
+	"gormADV/internal/database"
+	"gormADV/internal/models"
+)
+
+func GetTasks(userID uint) ([]models.Task, error) {
+	var tasks []models.Task
+	result := database.DB.Where("user_id = ?", userID).Find(&tasks)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return tasks, nil
+}
+
+func CreateTask(task *models.Task) error {
+	result := database.DB.Create(task)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func UpdateTask(taskID string, updatedTask *models.Task) error {
+	var task models.Task
+	result := database.DB.First(&task, taskID)
+	if result.Error != nil {
+		return errors.New("задача не найдена")
+	}
+
+	task.Title = updatedTask.Title
+	task.Description = updatedTask.Description
+	task.Status = updatedTask.Status
+	task.Category = updatedTask.Category
+
+	database.DB.Save(&task)
+	return nil
+}
+
+func DeleteTask(taskID string) error {
+	var task models.Task
+	result := database.DB.First(&task, taskID)
+	if result.Error != nil {
+		return errors.New("задача не найдена")
+	}
+
+	database.DB.Delete(&task)
+	return nil
+}
