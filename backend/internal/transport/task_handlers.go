@@ -1,11 +1,13 @@
 package transport
 
 import (
+	"backend/internal/models"
+	"backend/internal/services"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"gormADV/internal/models"
-	"gormADV/internal/services"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 func TaskRoutes(r *mux.Router) {
@@ -15,9 +17,11 @@ func TaskRoutes(r *mux.Router) {
 	taskRouter.HandleFunc("/", CreateTask).Methods("POST")
 	taskRouter.HandleFunc("/{id}", UpdateTask).Methods("PUT")
 	taskRouter.HandleFunc("/{id}", DeleteTask).Methods("DELETE")
+	r.HandleFunc("/projects/{projectID}/average-task-duration", GetAvgTaskCompletionTime).Methods("GET")
 }
 
 func GetTasks(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Context())
 	userID := r.Context().Value("userID").(uint)
 	tasks, err := services.GetTasks(userID)
 	if err != nil {
@@ -25,6 +29,7 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
 }
 
@@ -36,12 +41,16 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userID := r.Context().Value("userID").(uint)
+	task.UserID = userID
+
 	err = services.CreateTask(&task)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(task)
 }
 
@@ -62,6 +71,7 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updatedTask)
 }
 
@@ -75,5 +85,25 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func GetAvgTaskCompletionTime(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	projectID, err := strconv.ParseUint(vars["projectID"], 10, 32)
+	if err != nil {
+		http.Error(w, "Неверный формат ID проекта", http.StatusBadRequest)
+		return
+	}
+
+	avgDuration, err := services.GetAverageTaskCompletionTime(uint(projectID))
+	if err != nil {
+		http.Error(w, "Ошибка получения средней продолжительности выполнения задач", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]float64{"average_duration": avgDuration})
+
 }

@@ -1,10 +1,10 @@
 package transport
 
 import (
+	"backend/internal/models"
+	"backend/internal/services"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"gormADV/internal/models"
-	"gormADV/internal/services"
 	"net/http"
 )
 
@@ -29,6 +29,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -46,5 +47,6 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"token": token})
 }

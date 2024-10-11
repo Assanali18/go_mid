@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"backend/internal/middleware"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -8,6 +9,7 @@ import (
 func SetupRouter() *mux.Router {
 	r := mux.NewRouter()
 
+	r.Use(middleware.AuthMiddleware)
 	UserRoutes(r)
 	TaskRoutes(r)
 

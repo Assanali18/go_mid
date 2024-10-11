@@ -1,9 +1,9 @@
 package main
 
 import (
+	"backend/internal/app"
+	"backend/internal/database"
 	"fmt"
-	"gormADV/internal/app"
-	"gormADV/internal/database"
 )
 
 func main() {

@@ -1,11 +1,11 @@
 package services
 
 import (
+	"backend/internal/database"
+	"backend/internal/models"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
-	"gormADV/internal/database"
-	"gormADV/internal/models"
 	"time"
 )
 

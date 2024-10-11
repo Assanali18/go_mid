@@ -1,10 +1,14 @@
 package services
 
 import (
+	"backend/internal/database"
+	"backend/internal/models"
 	"errors"
-	"gormADV/internal/database"
-	"gormADV/internal/models"
 )
+
+type AverageDuration struct {
+	AvgDuration float64
+}
 
 func GetTasks(userID uint) ([]models.Task, error) {
 	var tasks []models.Task
@@ -50,4 +54,19 @@ func DeleteTask(taskID string) error {
 
 	database.DB.Delete(&task)
 	return nil
+}
+
+func GetAverageTaskCompletionTime(projectID uint) (float64, error) {
+	var result AverageDuration
+
+	err := database.DB.Model(&models.Task{}).
+		Select("AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) as avg_duration").
+		Where("project_id = ? AND status = ?", projectID, "Done").
+		Scan(&result).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return result.AvgDuration, nil
 }

@@ -1,11 +1,11 @@
 package database
 
 import (
+	"backend/internal/config"
+	"backend/internal/models"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gormADV/internal/config"
-	"gormADV/internal/models"
 	"log"
 )
 
