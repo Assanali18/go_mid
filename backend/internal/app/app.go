@@ -9,6 +9,5 @@ import (
 func Run() {
 
 	r := transport.SetupRouter()
-
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

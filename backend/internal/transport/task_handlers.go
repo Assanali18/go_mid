@@ -13,10 +13,10 @@ import (
 func TaskRoutes(r *mux.Router) {
 	taskRouter := r.PathPrefix("/tasks").Subrouter()
 
-	taskRouter.HandleFunc("/", GetTasks).Methods("GET")
-	taskRouter.HandleFunc("/", CreateTask).Methods("POST")
-	taskRouter.HandleFunc("/{id}", UpdateTask).Methods("PUT")
-	taskRouter.HandleFunc("/{id}", DeleteTask).Methods("DELETE")
+	taskRouter.HandleFunc("", GetTasks).Methods("GET", "OPTIONS")
+	taskRouter.HandleFunc("", CreateTask).Methods("POST", "OPTIONS")
+	taskRouter.HandleFunc("/{id}", UpdateTask).Methods("PUT", "OPTIONS")
+	taskRouter.HandleFunc("/{id}", DeleteTask).Methods("DELETE", "OPTIONS")
 	r.HandleFunc("/projects/{projectID}/average-task-duration", GetAvgTaskCompletionTime).Methods("GET")
 }
 

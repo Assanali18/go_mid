@@ -11,11 +11,17 @@ import (
 func UserRoutes(r *mux.Router) {
 	userRouter := r.PathPrefix("/users").Subrouter()
 
-	userRouter.HandleFunc("/register", RegisterUser).Methods("POST")
-	userRouter.HandleFunc("/login", LoginUser).Methods("POST")
+	userRouter.HandleFunc("/register", RegisterUser).Methods("POST", "OPTIONS")
+	userRouter.HandleFunc("/login", LoginUser).Methods("POST", "OPTIONS")
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -34,6 +40,11 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	var loginRequest models.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&loginRequest)
 	if err != nil {

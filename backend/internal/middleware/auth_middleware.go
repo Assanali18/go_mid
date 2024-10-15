@@ -10,6 +10,16 @@ import (
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		if r.Method == http.MethodOptions {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if r.URL.Path == "/users/login" || r.URL.Path == "/users/register" {
+			next.ServeHTTP(w, r)
+			return
+		}
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(w, "Отсутствует токен аутентификации", http.StatusUnauthorized)

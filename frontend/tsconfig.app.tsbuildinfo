@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/taskdetail/taskdetail.tsx","./src/components/taskform/taskfrom.tsx","./src/components/tasklist/tasklist.tsx","./src/pages/addtask/addtask.tsx","./src/pages/edittask/edittask.tsx","./src/pages/home/home.tsx"],"version":"5.6.2"}
