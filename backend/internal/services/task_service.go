@@ -4,6 +4,7 @@ import (
 	"backend/internal/database"
 	"backend/internal/models"
 	"errors"
+	"gorm.io/gorm"
 )
 
 type AverageDuration struct {
@@ -69,4 +70,16 @@ func GetAverageTaskCompletionTime(projectID uint) (float64, error) {
 	}
 
 	return result.AvgDuration, nil
+}
+
+func GetTaskByID(taskID string, userID uint) (*models.Task, error) {
+	var task models.Task
+	result := database.DB.Where("id = ? AND user_id = ?", taskID, userID).First(&task)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, errors.New("Задача не найдена")
+		}
+		return nil, result.Error
+	}
+	return &task, nil
 }

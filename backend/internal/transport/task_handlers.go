@@ -17,6 +17,7 @@ func TaskRoutes(r *mux.Router) {
 	taskRouter.HandleFunc("", CreateTask).Methods("POST", "OPTIONS")
 	taskRouter.HandleFunc("/{id}", UpdateTask).Methods("PUT", "OPTIONS")
 	taskRouter.HandleFunc("/{id}", DeleteTask).Methods("DELETE", "OPTIONS")
+	taskRouter.HandleFunc("/{id}", GetTaskDetail).Methods("GET", "OPTIONS")
 	r.HandleFunc("/projects/{projectID}/average-task-duration", GetAvgTaskCompletionTime).Methods("GET")
 }
 
@@ -106,4 +107,19 @@ func GetAvgTaskCompletionTime(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]float64{"average_duration": avgDuration})
 
+}
+func GetTaskDetail(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	taskID := vars["id"]
+
+	userID := r.Context().Value("userID").(uint)
+
+	task, err := services.GetTaskByID(taskID, userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(task)
 }
