@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../service/axios';
-
-interface Task {
-    title: string;
-    description: string;
-    category: string;
-    status: string;
-}
+import { Task } from '../../models/Task.ts';
 
 const TaskForm: React.FC = () => {
     const [task, setTask] = useState<Task>({
-        title: '',
-        description: '',
-        category: '',
-        status: 'To Do',
+        Title: '',
+        Description: '',
+        Category: '',
+        Status: 'To Do',
     });
     const navigate = useNavigate();
 
@@ -22,56 +16,69 @@ const TaskForm: React.FC = () => {
         e.preventDefault();
         try {
             await axiosInstance.post('/tasks', task);
-            navigate('/'); // Перенаправляем на главную страницу после создания задачи
+            navigate('/');
         } catch (error) {
             console.error('Ошибка при создании задачи:', error);
-            // Здесь можно добавить отображение сообщения об ошибке для пользователя
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Создать новую задачу</h2>
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
             <div>
-                <label htmlFor="title">Название:</label>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Название:</label>
                 <input
                     type="text"
                     id="title"
-                    value={task.title}
-                    onChange={(e) => setTask({ ...task, title: e.target.value })}
+                    value={task.Title}
+                    onChange={(e) => setTask({ ...task, Title: e.target.value })}
                     required
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
+
             <div>
-                <label htmlFor="description">Описание:</label>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Описание:</label>
                 <textarea
                     id="description"
-                    value={task.description}
-                    onChange={(e) => setTask({ ...task, description: e.target.value })}
+                    value={task.Description}
+                    onChange={(e) => setTask({ ...task, Description: e.target.value })}
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
+
             <div>
-                <label htmlFor="category">Категория:</label>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700">Категория:</label>
                 <input
                     type="text"
                     id="category"
-                    value={task.category}
-                    onChange={(e) => setTask({ ...task, category: e.target.value })}
+                    value={task.Category}
+                    onChange={(e) => setTask({ ...task, Category: e.target.value })}
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
+
             <div>
-                <label htmlFor="status">Статус:</label>
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700">Статус:</label>
                 <select
                     id="status"
-                    value={task.status}
-                    onChange={(e) => setTask({ ...task, status: e.target.value })}
+                    value={task.Status}
+                    onChange={(e) => setTask({ ...task, Status: e.target.value })}
+                    className="mt-1 block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 >
                     <option value="To Do">To Do</option>
                     <option value="In Process">In Process</option>
                     <option value="Done">Done</option>
                 </select>
             </div>
-            <button type="submit">Создать задачу</button>
+
+            <div>
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                >
+                    Создать задачу
+                </button>
+            </div>
         </form>
     );
 };

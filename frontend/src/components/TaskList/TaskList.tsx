@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axiosInstance from "../../service/axios.ts";
+import axiosInstance from '../../service/axios';
 
 interface Task {
     ID: number;
@@ -31,8 +31,6 @@ const TaskList: React.FC = () => {
         fetchTasks();
     }, []);
 
-    console.log('Tasks during render:', tasks);
-
     if (loading) {
         return <div>Загрузка...</div>;
     }
@@ -41,18 +39,34 @@ const TaskList: React.FC = () => {
         return <div>{error}</div>;
     }
 
+    if (tasks.length === 0) {
+        return <div>Нет задач для отображения</div>;
+    }
+
     return (
-        <div>
-            <h2>Список задач</h2>
-            <Link to="/add-task">Добавить новую задачу</Link>
-            <ul>
-                {tasks.map(task => (
-                    <li key={task.ID}>
-                        <Link to={`/tasks/${task.ID}`}>{task.Title}</Link> - {task.Status}
-                        <Link to={`/edit-task/${task.ID}`}>Редактировать</Link>
-                    </li>
-                ))}
-            </ul>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {tasks.map((task) => (
+                <div key={task.ID} className="border rounded-lg p-4 shadow-sm">
+                    <h3 className="text-xl font-semibold mb-2">{task.Title}</h3>
+                    <p className="text-gray-600 mb-2">{task.Description}</p>
+                    <p className="text-sm text-gray-500 mb-4">Категория: {task.Category}</p>
+                    <p className="text-sm text-gray-500 mb-4">Статус: {task.Status}</p>
+                    <div className="flex justify-between">
+                        <Link
+                            to={`/tasks/${task.ID}`}
+                            className="text-blue-500 hover:underline"
+                        >
+                            Подробнее
+                        </Link>
+                        <Link
+                            to={`/edit-task/${task.ID}`}
+                            className="text-green-500 hover:underline"
+                        >
+                            Редактировать
+                        </Link>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
