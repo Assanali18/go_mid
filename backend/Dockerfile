@@ -1,21 +1,29 @@
-# Базовый образ
-FROM golang:1.18
+# Указываем базовый образ для Go
+FROM golang:1.18 AS builder
 
-
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
+# Копируем файл go.mod и go.sum в рабочую директорию
+COPY go.mod go.sum ./
 
-COPY go.mod ./
-COPY go.sum ./
-
-
+# Загружаем зависимости
 RUN go mod download
 
-
+# Копируем всё содержимое проекта в контейнер
 COPY . .
 
+# Собираем Go-приложение
+RUN go build -o out ./cmd/app # или укажите путь к основному файлу вашего проекта
 
-RUN go build -o out ./cmd/app
+# Указываем минимальный образ для конечного контейнера
+FROM ubuntu:latest
 
+# Устанавливаем рабочую директорию
+WORKDIR /app
 
+# Копируем бинарный файл из стадии сборки
+COPY --from=builder /app/out .
+
+# Запускаем приложение
 CMD ["/app/out"]
