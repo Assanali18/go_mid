@@ -17,7 +17,7 @@ type Config struct {
 var AppConfig *Config
 
 func init() {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Fatalf("Failed on loading .env: %v", err)
 	}
 

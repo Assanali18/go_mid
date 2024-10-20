@@ -8,7 +8,6 @@ RUN go mod download
 
 COPY . .
 
-COPY .env .env
 
 RUN go build -o out ./cmd
 
@@ -17,7 +16,5 @@ FROM ubuntu:latest
 WORKDIR /app
 
 COPY --from=builder /app/out .
-COPY --from=builder /app/.env .
-
 
 CMD ["/app/out"]
