@@ -15,5 +15,7 @@ FROM ubuntu:latest
 WORKDIR /app
 
 COPY --from=builder /app/out .
+COPY --from=builder /app/.env .
+
 
 CMD ["/app/out"]
