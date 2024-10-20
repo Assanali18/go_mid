@@ -8,6 +8,8 @@ RUN go mod download
 
 COPY . .
 
+COPY .env .env
+
 RUN go build -o out ./cmd
 
 FROM ubuntu:latest
