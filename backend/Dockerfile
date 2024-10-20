@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o out ./cmd/app # или укажите путь к основному файлу вашего проекта
+RUN go build -o out ./cmd
 
 FROM ubuntu:latest
 
