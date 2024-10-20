@@ -1,8 +1,6 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
@@ -17,10 +15,6 @@ type Config struct {
 var AppConfig *Config
 
 func init() {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalf("Failed on loading .env: %v", err)
-	}
-
 	AppConfig = &Config{
 		DBHost:     os.Getenv("DB_HOST"),
 		DBUser:     os.Getenv("DB_USER"),
